@@ -151,7 +151,7 @@ export default function Navbar() {
               onClick={openTerminal}
               className="text-xl font-mono text-gray-500 uppercase tracking-widest hover:text-white"
             >
-              > TERMINAL_
+              {'>'} TERMINAL_
             </button>
 
             <button
