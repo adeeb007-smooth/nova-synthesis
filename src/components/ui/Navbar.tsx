@@ -7,7 +7,6 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
-  // Handle Scroll Effect (for visual polish, not hiding)
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
@@ -34,37 +33,32 @@ export default function Navbar() {
 
   return (
     <>
-      {/* WRAPPER: Fixed to top, high z-index.
-        NO hiding animation anymore. It stays put.
-      */}
       <header className="fixed top-0 left-0 w-full z-[100] pointer-events-none">
         
         {/* =======================================
-            DESKTOP VIEW: FLOATING PILL
-            (Centered, Sticky, Always Visible)
+            DESKTOP VIEW: FLOATING PILL (White/Gold)
            ======================================= */}
         <div className="hidden md:flex justify-center pt-6 transition-all duration-300">
           <motion.div 
             initial={{ y: -100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            // Pointer events auto re-enables clicking inside this container
-            className={`pointer-events-auto flex items-center gap-6 px-3 py-2 border rounded-full shadow-2xl transition-all duration-500 ${
+            // Changed bg to white/light with a subtle gold shadow on scroll
+            className={`pointer-events-auto flex items-center gap-6 px-3 py-2 border rounded-full shadow-lg transition-all duration-500 ${
               scrolled 
-                ? 'bg-black/80 backdrop-blur-xl border-white/10 shadow-[0_0_20px_rgba(0,0,0,0.5)]' 
-                : 'bg-black/40 backdrop-blur-md border-white/5'
+                ? 'bg-white/90 backdrop-blur-xl border-[#D4AF37]/20 shadow-[0_0_20px_rgba(212,175,55,0.15)]' 
+                : 'bg-white/70 backdrop-blur-md border-gray-200'
             }`}
           >
             
             {/* LOGO SECTION */}
             <div className="flex items-center pl-3 gap-4 cursor-pointer group" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-              {/* Animated Diamond Logo */}
               <div className="relative w-6 h-6 flex items-center justify-center">
-                 <div className="absolute inset-0 bg-cyan opacity-20 blur-md group-hover:opacity-50 transition-opacity" />
-                 <div className="w-4 h-4 bg-gradient-to-br from-cyan to-blue-600 rotate-45 group-hover:rotate-90 transition-transform duration-500 shadow-[0_0_10px_#00F0FF]" />
+                 {/* Gold blur and gradient icon */}
+                 <div className="absolute inset-0 bg-[#D4AF37] opacity-20 blur-md group-hover:opacity-50 transition-opacity" />
+                 <div className="w-4 h-4 bg-gradient-to-br from-[#D4AF37] to-[#B59025] rotate-45 group-hover:rotate-90 transition-transform duration-500 shadow-[0_0_10px_#D4AF37]" />
               </div>
-              {/* Vertical Separator */}
-              <div className="w-[1px] h-4 bg-white/20" />
+              <div className="w-[1px] h-4 bg-gray-300" />
             </div>
 
             {/* NAVIGATION LINKS */}
@@ -73,26 +67,28 @@ export default function Navbar() {
                 <button 
                   key={item} 
                   onClick={() => scrollToSection(item === 'PROJECTS' ? 'work' : item.toLowerCase())}
-                  className="text-[11px] font-bold text-gray-400 hover:text-white uppercase tracking-widest transition-colors relative group"
+                  // Changed text colors to dark gray -> black
+                  className="text-[11px] font-bold text-gray-500 hover:text-black uppercase tracking-widest transition-colors relative group"
                 >
                   {item}
-                  {/* Hover Dot */}
-                  <span className="absolute -bottom-1 left-1/2 w-0 h-[1px] bg-cyan group-hover:w-full group-hover:left-0 transition-all duration-300" />
+                  {/* Gold hover dot */}
+                  <span className="absolute -bottom-1 left-1/2 w-0 h-[1px] bg-[#D4AF37] group-hover:w-full group-hover:left-0 transition-all duration-300" />
                 </button>
               ))}
 
               <button 
                 onClick={openTerminal}
-                className="text-[11px] font-bold text-gray-400 hover:text-cyan uppercase tracking-widest transition-colors"
+                className="text-[11px] font-bold text-gray-500 hover:text-[#D4AF37] uppercase tracking-widest transition-colors"
               >
                 TERMINAL
               </button>
             </div>
 
-            {/* CONTACT BUTTON (Inside the pill) */}
+            {/* CONTACT BUTTON (Gold) */}
             <button 
               onClick={openContact}
-              className="px-5 py-2 bg-cyan text-black font-bold text-[11px] uppercase tracking-widest rounded-full hover:bg-white hover:shadow-[0_0_15px_rgba(0,240,255,0.6)] transition-all duration-300"
+              // Changed button to Gold bg with White text
+              className="px-5 py-2 bg-[#D4AF37] text-white font-bold text-[11px] uppercase tracking-widest rounded-full hover:bg-black hover:shadow-[0_0_15px_rgba(212,175,55,0.4)] transition-all duration-300"
             >
               CONTACT
             </button>
@@ -102,24 +98,23 @@ export default function Navbar() {
 
         {/* =======================================
             MOBILE VIEW: FULL WIDTH BAR
-            (Standard header for phones)
            ======================================= */}
-        <div className={`md:hidden pointer-events-auto flex justify-between items-center px-6 py-4 transition-colors duration-300 ${scrolled ? 'bg-black/80 backdrop-blur-md border-b border-white/5' : 'bg-transparent'}`}>
+        <div className={`md:hidden pointer-events-auto flex justify-between items-center px-6 py-4 transition-colors duration-300 ${scrolled ? 'bg-white/90 backdrop-blur-md border-b border-gray-100' : 'bg-transparent'}`}>
           
-          {/* Mobile Logo */}
+          {/* Mobile Logo (Gold) */}
           <div className="flex items-center gap-2" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-             <div className="w-8 h-8 bg-gradient-to-br from-cyan to-blue-600 rounded-lg rotate-45 shadow-[0_0_10px_#00F0FF]" />
-             <span className="font-bold text-xl tracking-tighter text-white ml-2">NOVA</span>
+             <div className="w-8 h-8 bg-gradient-to-br from-[#D4AF37] to-[#B59025] rounded-lg rotate-45 shadow-[0_0_10px_#D4AF37]" />
+             <span className="font-bold text-xl tracking-tighter text-black ml-2">NOVA</span>
           </div>
 
-          {/* Burger Button */}
+          {/* Burger Button (Black) */}
           <button 
             onClick={() => setIsOpen(!isOpen)}
             className="relative w-8 h-8 flex flex-col justify-center gap-[6px] group z-50"
           >
-            <span className={`h-[2px] w-full bg-white transition-all duration-300 ${isOpen ? 'rotate-45 translate-y-[8px]' : ''}`} />
-            <span className={`h-[2px] w-full bg-white transition-all duration-300 ${isOpen ? 'opacity-0' : ''}`} />
-            <span className={`h-[2px] w-full bg-white transition-all duration-300 ${isOpen ? '-rotate-45 -translate-y-[8px]' : ''}`} />
+            <span className={`h-[2px] w-full bg-black transition-all duration-300 ${isOpen ? 'rotate-45 translate-y-[8px] bg-white' : ''}`} />
+            <span className={`h-[2px] w-full bg-black transition-all duration-300 ${isOpen ? 'opacity-0' : ''}`} />
+            <span className={`h-[2px] w-full bg-black transition-all duration-300 ${isOpen ? '-rotate-45 -translate-y-[8px] bg-white' : ''}`} />
           </button>
         </div>
 
@@ -127,7 +122,7 @@ export default function Navbar() {
 
 
       {/* =======================================
-          MOBILE MENU OVERLAY
+          MOBILE MENU OVERLAY (White/Gold)
          ======================================= */}
       <AnimatePresence>
         {isOpen && (
@@ -135,13 +130,15 @@ export default function Navbar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[90] bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center space-y-8 md:hidden"
+            // Changed bg to white
+            className="fixed inset-0 z-[90] bg-white/95 backdrop-blur-xl flex flex-col items-center justify-center space-y-8 md:hidden"
           >
             {['MISSION', 'PROJECTS', 'TEAM'].map((item) => (
               <button
                 key={item}
                 onClick={() => scrollToSection(item === 'PROJECTS' ? 'work' : item.toLowerCase())}
-                className="text-3xl font-bold text-white uppercase tracking-tighter hover:text-cyan"
+                // Changed text to black -> gold hover
+                className="text-3xl font-bold text-black uppercase tracking-tighter hover:text-[#D4AF37]"
               >
                 {item}
               </button>
@@ -149,14 +146,15 @@ export default function Navbar() {
 
             <button
               onClick={openTerminal}
-              className="text-xl font-mono text-gray-500 uppercase tracking-widest hover:text-white"
+              className="text-xl font-mono text-gray-400 uppercase tracking-widest hover:text-[#D4AF37]"
             >
-              {'>'} TERMINAL_
+              > TERMINAL_
             </button>
 
             <button
               onClick={openContact}
-              className="mt-8 px-10 py-4 bg-cyan text-black text-xl font-bold uppercase tracking-widest rounded-full"
+              // Gold button
+              className="mt-8 px-10 py-4 bg-[#D4AF37] text-white text-xl font-bold uppercase tracking-widest rounded-full"
             >
               CONTACT US
             </button>

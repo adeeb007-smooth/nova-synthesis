@@ -12,9 +12,7 @@ import img4 from '../images/image.4.jpg';
 import img5 from '../images/image.5.jpg';
 import img6 from '../images/image.6.jpg';
 
-// ==========================================
-// DATA: PROJECTS WITH MISSION DETAILS
-// ==========================================
+// DATA
 const projects = [
   { 
     id: 1, 
@@ -95,7 +93,6 @@ export default function AchieveSection() {
   const [selectedProject, setSelectedProject] = useState<any | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // MOUSE PHYSICS (Desktop Only)
   const mouseX = useMotionValue(0);
   
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -112,17 +109,14 @@ export default function AchieveSection() {
   return (
     <section 
       id="work" 
-      className="relative w-full py-24 md:py-32 flex flex-col items-center justify-center overflow-hidden bg-[#050505]"
+      className="relative w-full py-24 md:py-32 flex flex-col items-center justify-center overflow-hidden bg-white"
     >
-      
-      {/* HEADER */}
       <div className="mb-12 text-center z-10">
-        <p className="text-xs font-mono text-gray-500 uppercase tracking-widest">
+        <p className="text-xs font-mono text-gray-600 uppercase tracking-widest">
           [ EXPLORE THE ARCHIVE ]
         </p>
       </div>
 
-      {/* THE HYBRID STRIP (ACCORDION) */}
       <div 
         ref={containerRef}
         onMouseMove={handleMouseMove}
@@ -140,9 +134,6 @@ export default function AchieveSection() {
         ))}
       </div>
 
-      {/* ==========================================
-          TACTICAL MODAL (POPUP)
-         ========================================== */}
       <AnimatePresence>
         {selectedProject && (
           <ProjectModal 
@@ -156,62 +147,54 @@ export default function AchieveSection() {
   );
 }
 
-// ==========================================
-// SUB-COMPONENT: ACCORDION CARD
-// ==========================================
 function ProjectCard({ project, activeId, setActiveId, onOpenModal }: any) {
   const isActive = activeId === project.id;
 
   return (
     <motion.div
       layout
-      // CLICK LOGIC: If already active, open modal. If not, make active.
       onClick={() => isActive ? onOpenModal() : setActiveId(project.id)}
       onMouseEnter={() => setActiveId(project.id)}
-      className={`relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-500 ease-[0.22,1,0.36,1] group border border-white/5`}
+      className={`relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-500 ease-[0.22,1,0.36,1] group border ${isActive ? 'border-[#D4AF37]' : 'border-gray-200 hover:border-[#D4AF37]/50'}`}
       style={{
         flex: isActive ? 5 : 1,
-        filter: isActive ? "grayscale(0%) brightness(1)" : "grayscale(100%) brightness(0.5)",
       }}
     >
-      {/* BACKGROUND IMAGE */}
       <div className="absolute inset-0 w-full h-full overflow-hidden">
         <Image
           src={project.image}
           alt={project.title}
           fill
-          className={`object-cover transition-transform duration-1000 ease-out ${isActive ? 'scale-110' : 'scale-100'}`}
+          // FIX: ADDED SIZES PROP
           sizes="(max-width: 768px) 100vw, 50vw"
+          className={`object-cover transition-transform duration-1000 ease-out ${isActive ? 'scale-110' : 'scale-100'}`}
         />
-        <div className={`absolute inset-0 bg-black/40 transition-opacity duration-500 ${isActive ? 'opacity-0' : 'opacity-100'}`} />
+        <div className={`absolute inset-0 bg-white/20 transition-opacity duration-500 ${isActive ? 'opacity-0' : 'opacity-100'}`} />
+        <div className={`absolute inset-0 bg-gradient-to-t from-black/60 to-transparent transition-opacity duration-500 ${isActive ? 'opacity-100' : 'opacity-0'}`} />
       </div>
 
-      {/* ACTIVE CONTENT */}
       <div className={`absolute bottom-0 left-0 p-6 md:p-8 w-full transition-all duration-500 ${isActive ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-        <p className="text-cyan font-mono text-xs uppercase tracking-widest mb-2">
+        <p className="text-[#D4AF37] font-mono text-xs uppercase tracking-widest mb-2">
           {project.category}
         </p>
         <h3 className="text-2xl md:text-4xl font-bold text-white uppercase tracking-tighter whitespace-nowrap mb-4">
           {project.title}
         </h3>
         
-        {/* VISUAL CUE BUTTON */}
-        <div className="inline-flex items-center gap-2 text-[10px] font-mono text-white uppercase tracking-widest bg-white/10 px-4 py-2 rounded-full border border-white/20 pointer-events-none">
+        <div className="inline-flex items-center gap-2 text-[10px] font-mono text-white uppercase tracking-widest bg-[#D4AF37] px-4 py-2 rounded-full pointer-events-none shadow-md">
           OPEN MISSION REPORT
-          <span className="text-cyan">+</span>
+          <span className="text-white">+</span>
         </div>
       </div>
 
-      {/* DESKTOP COLLAPSED LABEL */}
       <div className={`hidden md:block absolute bottom-8 left-1/2 -translate-x-1/2 transition-opacity duration-300 ${!isActive ? 'opacity-100' : 'opacity-0'}`}>
-        <p className="text-gray-400 font-mono text-[10px] uppercase tracking-widest rotate-[-90deg] whitespace-nowrap origin-center">
+        <p className="text-gray-800 font-mono text-[10px] uppercase tracking-widest rotate-[-90deg] whitespace-nowrap origin-center font-bold">
           {project.category}
         </p>
       </div>
 
-      {/* MOBILE COLLAPSED LABEL */}
       <div className={`md:hidden absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${!isActive ? 'opacity-100' : 'opacity-0'}`}>
-        <h3 className="text-lg font-bold text-white/50 uppercase tracking-widest">
+        <h3 className="text-lg font-bold text-white drop-shadow-md uppercase tracking-widest">
           {project.title}
         </h3>
       </div>
@@ -220,11 +203,7 @@ function ProjectCard({ project, activeId, setActiveId, onOpenModal }: any) {
   );
 }
 
-// ==========================================
-// SUB-COMPONENT: MISSION REPORT MODAL
-// ==========================================
 function ProjectModal({ project, onClose }: { project: any, onClose: () => void }) {
-  // Lock body scroll
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     return () => { document.body.style.overflow = 'unset'; };
@@ -237,104 +216,94 @@ function ProjectModal({ project, onClose }: { project: any, onClose: () => void 
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-8"
     >
-      {/* BACKDROP */}
       <div 
         onClick={onClose} 
-        className="absolute inset-0 bg-black/90 backdrop-blur-xl transition-all" 
+        className="absolute inset-0 bg-white/80 backdrop-blur-xl transition-all" 
       />
 
-      {/* MODAL CONTENT */}
       <motion.div
         initial={{ scale: 0.9, opacity: 0, y: 50 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.9, opacity: 0, y: 50 }}
         transition={{ type: "spring", bounce: 0.3, duration: 0.6 }}
-        // FIX: Added 'max-h-full' and 'flex-col' to ensure it fits the screen
-        className="relative w-full max-w-6xl max-h-[90vh] h-[85vh] bg-[#050505] border border-white/10 shadow-[0_0_100px_rgba(0,240,255,0.1)] overflow-hidden flex flex-col md:flex-row rounded-xl"
+        className="relative w-full max-w-6xl max-h-[90vh] h-[85vh] bg-white border border-[#D4AF37]/20 shadow-[0_0_50px_rgba(212,175,55,0.15)] overflow-hidden flex flex-col md:flex-row rounded-xl"
       >
-        
-        {/* CLOSE BUTTON */}
         <button 
           onClick={onClose}
-          className="absolute top-6 right-6 z-50 p-2 bg-black/50 hover:bg-white hover:text-black border border-white/10 rounded-full group transition-all duration-300"
+          className="absolute top-6 right-6 z-50 p-2 bg-gray-100 hover:bg-[#D4AF37] hover:text-white text-black border border-gray-200 rounded-full group transition-all duration-300"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
 
-        {/* LEFT PANEL: DATA */}
-        {/* FIX: Added 'data-lenis-prevent' and 'overscroll-contain' */}
         <div 
           data-lenis-prevent="true"
-          className="w-full md:w-[45%] p-8 md:p-12 overflow-y-auto custom-scrollbar order-2 md:order-1 border-r border-white/5 overscroll-contain"
+          className="w-full md:w-[45%] p-8 md:p-12 overflow-y-auto custom-scrollbar order-2 md:order-1 border-r border-gray-100 overscroll-contain"
         >
           <div className="mb-10">
-            <span className="text-cyan font-mono text-xs uppercase tracking-widest">ID_{project.id} // SECURE FILE</span>
-            <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tighter leading-none mt-3 mb-6">
+            <span className="text-[#D4AF37] font-mono text-xs uppercase tracking-widest">ID_{project.id} // SECURE FILE</span>
+            <h2 className="text-4xl md:text-5xl font-bold text-black tracking-tighter leading-none mt-3 mb-6">
               {project.title}
             </h2>
             <div className="flex gap-2">
-               <span className="px-3 py-1 bg-white/5 border border-white/10 rounded text-[10px] text-gray-400 font-mono uppercase">{project.category}</span>
-               <span className="px-3 py-1 bg-cyan/10 border border-cyan/20 rounded text-[10px] text-cyan font-mono uppercase">COMPLETED</span>
+               <span className="px-3 py-1 bg-gray-100 border border-gray-200 rounded text-[10px] text-gray-600 font-mono uppercase">{project.category}</span>
+               <span className="px-3 py-1 bg-[#D4AF37]/10 border border-[#D4AF37]/20 rounded text-[10px] text-[#D4AF37] font-mono uppercase">COMPLETED</span>
             </div>
           </div>
 
           <div className="space-y-10">
-            {/* CHALLENGE */}
             <div>
-              <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+              <h4 className="text-xs font-bold text-gray-700 uppercase tracking-widest mb-3 flex items-center gap-2">
                 <span className="w-1.5 h-1.5 bg-red-500 rounded-full" /> The Challenge
               </h4>
-              <p className="text-gray-300 font-mono text-sm leading-relaxed border-l border-white/10 pl-4">
+              <p className="text-gray-600 font-mono text-sm leading-relaxed border-l border-gray-200 pl-4">
                 {project.details.challenge}
               </p>
             </div>
 
-            {/* SOLUTION */}
             <div>
-              <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3 flex items-center gap-2">
-                <span className="w-1.5 h-1.5 bg-cyan rounded-full" /> The Solution
+              <h4 className="text-xs font-bold text-gray-700 uppercase tracking-widest mb-3 flex items-center gap-2">
+                <span className="w-1.5 h-1.5 bg-[#D4AF37] rounded-full" /> The Solution
               </h4>
-              <p className="text-gray-300 font-mono text-sm leading-relaxed border-l border-white/10 pl-4">
+              <p className="text-gray-600 font-mono text-sm leading-relaxed border-l border-gray-200 pl-4">
                 {project.details.solution}
               </p>
             </div>
 
-            {/* OUTCOME */}
-            <div className="p-5 bg-gradient-to-br from-white/5 to-transparent border border-white/10 rounded-lg">
-              <h4 className="text-xs font-bold text-white uppercase tracking-widest mb-3 flex items-center gap-2">
+            <div className="p-5 bg-gradient-to-br from-[#D4AF37]/10 to-transparent border border-[#D4AF37]/20 rounded-lg">
+              <h4 className="text-xs font-bold text-black uppercase tracking-widest mb-3 flex items-center gap-2">
                 <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" /> The Outcome
               </h4>
-              <p className="text-white font-mono text-sm leading-relaxed">
+              <p className="text-black font-mono text-sm leading-relaxed">
                 {project.details.outcome}
               </p>
             </div>
           </div>
         </div>
 
-        {/* RIGHT PANEL: GALLERY */}
-        {/* FIX: Added 'data-lenis-prevent' to the gallery container as well */}
-        <div className="w-full md:w-[55%] bg-[#080808] relative order-1 md:order-2 h-[300px] md:h-full">
+        <div className="w-full md:w-[55%] bg-gray-50 relative order-1 md:order-2 h-[300px] md:h-full">
           <div 
             data-lenis-prevent="true"
             className="absolute inset-0 overflow-y-auto no-scrollbar overscroll-contain"
           >
              {project.gallery.map((img: any, i: number) => (
-                <div key={i} className="relative w-full aspect-[16/10] border-b border-white/5 last:border-0 group">
+                <div key={i} className="relative w-full aspect-[16/10] border-b border-gray-200 last:border-0 group">
                   <Image 
                     src={img} 
                     alt={`Evidence ${i+1}`}
                     fill
+                    // FIX: ADDED SIZES PROP
+                    sizes="(max-width: 768px) 100vw, 50vw"
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                  <div className="absolute top-4 left-4 px-3 py-1 bg-black/70 backdrop-blur-md border border-white/10 text-[10px] font-mono text-white/80 rounded-full">
+                  <div className="absolute top-4 left-4 px-3 py-1 bg-white/80 backdrop-blur-md border border-gray-200 text-[10px] font-mono text-black rounded-full shadow-sm">
                     IMG_EVIDENCE_0{i+1}
                   </div>
                 </div>
               ))}
-              <div className="h-20 bg-[#080808] flex items-center justify-center">
-                 <p className="text-[10px] font-mono text-gray-600 uppercase">END OF GALLERY</p>
+              <div className="h-20 bg-gray-50 flex items-center justify-center">
+                 <p className="text-[10px] font-mono text-gray-400 uppercase">END OF GALLERY</p>
               </div>
           </div>
         </div>

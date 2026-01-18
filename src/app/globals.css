@@ -3,58 +3,96 @@
 @tailwind utilities;
 
 :root {
-  --background: #050505;
-  --foreground: #ffffff;
-}
-
-html.lenis, html.lenis body {
-  height: auto;
-}
-
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
-}
-
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
-}
-
-.lenis.lenis-stopped {
-  overflow: hidden;
-}
-
-.lenis.lenis-scrolling iframe {
-  pointer-events: none;
+  /* Premium Gold Color Variable */
+  --gold: #D4AF37;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  /* CRITICAL: Do NOT set overflow-x: hidden here if using Lenis on body */
-  /* We handle horizontal overflow in the main wrapper instead */
+  /* CHANGED: Switched to Obsidian Black for the new theme */
+  background-color: #050505;
+  /* CHANGED: Switched text to Off-White */
+  color: #e5e5e5;
+  font-family: Arial, Helvetica, sans-serif;
+  
+  /* CRITICAL: Hides default cursor for the Custom Cursor component */
+  cursor: none; 
 }
 
-/* Custom Scrollbar Styling (Optional Elite Touch) */
+/* Ensure links and buttons also hide the default cursor */
+a, button {
+  cursor: none; 
+}
+
+/* Updated selection color */
+::selection {
+  background-color: var(--gold);
+  color: black;
+}
+
+/* =========================================
+   CUSTOM UTILITIES FOR NAVBAR
+   ========================================= */
+
+/* Creates the hollow "outline" text effect */
+.stroke-text {
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.5);
+  color: transparent;
+}
+
+/* Hover state for the Navbar links */
+.group:hover .stroke-text,
+.hover\:text-stroke-white:hover {
+  -webkit-text-stroke: 1px #ffffff;
+  color: transparent;
+}
+
+
+/* =========================================
+   CUSTOM SCROLLBAR (Dark Theme)
+   ========================================= */
 ::-webkit-scrollbar {
   width: 8px;
 }
+
 ::-webkit-scrollbar-track {
-  background: #0a0a0a;
+  background: #111111; /* Dark track */
 }
+
 ::-webkit-scrollbar-thumb {
-  background: #333;
+  background: #333333; /* Dark gray thumb */
   border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: #00F0FF; /* Cyan on hover */
+  background: var(--gold); /* Gold on hover */
 }
 
-/* Selection Color */
-::selection {
-  background-color: #00F0FF;
-  color: #000000;
+/* Utilities */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-.hover\:pause-animation:hover {
-  animation-play-state: paused;
+.overscroll-contain {
+  overscroll-behavior: contain;
+}
+
+/* Ensure Lenis (Smooth Scroll) works correctly */
+html.lenis, html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
 }

@@ -9,13 +9,22 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        void: "#050505",
-        cyan: "#00F0FF",
-        magenta: "#FF003C",
+        obsidian: "#050505", // The Void
+        gold: "#D4AF37",     // The Luxury Accent
       },
       fontFamily: {
-        mono: ['var(--font-jetbrains)', 'monospace'],
         sans: ['var(--font-inter)', 'sans-serif'],
+        mono: ['var(--font-jetbrains)', 'monospace'],
+      },
+      animation: {
+        'drift': 'drift 10s infinite ease-in-out',
+      },
+      keyframes: {
+        drift: {
+          '0%, 100%': { transform: 'translate(0px, 0px)' },
+          '33%': { transform: 'translate(30px, -50px)' },
+          '66%': { transform: 'translate(-20px, 40px)' },
+        }
       }
     },
   },
