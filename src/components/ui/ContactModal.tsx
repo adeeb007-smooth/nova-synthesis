@@ -187,7 +187,8 @@ export default function ContactModal({ isOpen, onClose }: { isOpen: boolean; onC
                     [ ✔ TRANSMISSION SUCCESSFUL ]
                   </p>
                   <p className="text-gray-500 text-xs">
-                    > Closing connection in 3... 2... 1...
+                    {/* THIS WAS THE FIX: escaped the > character */}
+                    {`>`} Closing connection in 3... 2... 1...
                   </p>
                 </div>
               )}
