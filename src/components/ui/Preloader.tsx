@@ -1,74 +1,121 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const bootLines = [
-  "INITIALIZING VYBAND KERNEL...",
-  "LOADING NEURAL MESH...",
-  "OPTIMIZING VIRTUAL DOM...",
-  "ESTABLISHING SECURE UPLINK...",
-  "ACCESS GRANTED."
-];
-
-export default function Preloader() {
-  const [index, setIndex] = useState(0);
-  const [isVisible, setIsVisible] = useState(true);
+export default function LoadingScreen({ onComplete }: { onComplete?: () => void }) {
+  const [progress, setProgress] = useState(0);
+  const [loadingComplete, setLoadingComplete] = useState(false);
 
   useEffect(() => {
-    // 1. Type out the lines one by one
-    if (index < bootLines.length) {
-      const timeout = setTimeout(() => {
-        setIndex((prev) => prev + 1);
-      }, 400); // Speed of typing
-      return () => clearTimeout(timeout);
-    } 
-    
-    // 2. When done, wait a moment then lift the curtain
-    else {
-      const timeout = setTimeout(() => {
-        setIsVisible(false);
-      }, 800);
-      return () => clearTimeout(timeout);
+    // Simulate loading progress
+    const timer = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(timer);
+          setLoadingComplete(true);
+          return 100;
+        }
+        const increment = Math.floor(Math.random() * 5) + 2; 
+        return Math.min(prev + increment, 100);
+      });
+    }, 40);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  // Handle Exit Logic
+  useEffect(() => {
+    if (loadingComplete) {
+      setTimeout(() => {
+        if (onComplete) onComplete();
+      }, 1500);
     }
-  }, [index]);
+  }, [loadingComplete, onComplete]);
+
+  // Animation variants for the bounces
+  const bounceVariants = {
+    initial: { y: 0 },
+    animate: { 
+      y: [0, -40, 0],
+      transition: {
+        duration: 0.8,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }
+    },
+    exit: { opacity: 0, scale: 0, transition: { duration: 0.3 } }
+  };
+
+  const goldBounceVariants = {
+    initial: { y: 0 },
+    // Bounce higher than the others
+    animate: { 
+      y: [0, -60, 0],
+      transition: {
+        duration: 0.8,
+        repeat: Infinity,
+        ease: "easeInOut",
+        delay: 0.1 
+      }
+    },
+    // Fade out instantly so the expander takes over
+    exit: { opacity: 0, transition: { duration: 0.1 } }
+  };
 
   return (
     <AnimatePresence>
-      {isVisible && (
+      {(!loadingComplete || true) ? (
         <motion.div
-          initial={{ y: 0 }}
-          exit={{ y: "-100%", transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } }}
-          className="fixed inset-0 z-[999] flex items-center justify-center bg-black font-mono"
+          key="loader-container"
+          // Final fade out of the gold screen to reveal the site
+          animate={loadingComplete ? { opacity: 0, transition: { delay: 1.2, duration: 0.8 } } : { opacity: 1 }}
+          className={`fixed inset-0 z-[9999] flex items-center justify-center bg-black overflow-hidden ${loadingComplete ? 'pointer-events-none' : ''}`}
         >
-          <div className="w-80">
-            {/* BOOT LOG */}
-            <div className="flex flex-col items-start gap-1 text-xs md:text-sm">
-              {bootLines.slice(0, index + 1).map((line, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  className={`${i === bootLines.length - 1 ? "text-cyan-400 font-bold" : "text-gray-500"}`}
-                >
-                  <span className="mr-2">{">"}</span>
-                  {line}
-                </motion.div>
-              ))}
-            </div>
+          
+          {/* 1. THE THREE BOUNCING BALLS */}
+          <motion.div
+            animate={loadingComplete ? "exit" : "animate"}
+            initial="initial"
+            className="relative z-20 flex items-end gap-6 h-32 pb-10"
+          >
+             {/* Black Ball */}
+             <motion.div 
+                variants={bounceVariants}
+                className="w-6 h-6 rounded-full bg-[#1a1a1a] border border-white/10 shadow-sm"
+             />
+             
+             {/* Gold Ball (Bouncing) */}
+             <motion.div 
+                variants={goldBounceVariants}
+                className="w-8 h-8 rounded-full bg-[#D4AF37] shadow-[0_0_20px_#D4AF37]"
+             />
+             
+             {/* White Ball */}
+             <motion.div 
+                variants={bounceVariants}
+                transition={{ delay: 0.2 }}
+                className="w-6 h-6 rounded-full bg-white shadow-[0_0_10px_white]"
+             />
+          </motion.div>
 
-            {/* LOADING BAR */}
-            <div className="mt-8 w-full h-[1px] bg-gray-900 overflow-hidden relative">
-              <motion.div 
-                className="absolute top-0 left-0 h-full bg-cyan-400 box-shadow-[0_0_10px_#00F0FF]"
-                initial={{ width: "0%" }}
-                animate={{ width: "100%" }}
-                transition={{ duration: 2.5, ease: "easeInOut" }}
-              />
-            </div>
-          </div>
+
+          {/* 2. THE EXPANDING GOLD CIRCLE (The Final "Pop") 
+              FIX: Initial scale is now 0 so it is invisible until needed.
+          */}
+          <motion.div
+            initial={{ scale: 0, opacity: 0 }}
+            animate={loadingComplete ? { scale: 60, opacity: 1 } : { scale: 0, opacity: 0 }}
+            transition={{ 
+              duration: 1.2, 
+              ease: [0.87, 0, 0.13, 1], // Expo ease for dramatic pop
+              delay: 0.1 
+            }}
+            className="absolute z-10 w-8 h-8 bg-[#D4AF37] rounded-full"
+          />
+
         </motion.div>
-      )}
+      ) : null}
     </AnimatePresence>
   );
 }
